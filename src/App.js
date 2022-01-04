@@ -1,6 +1,13 @@
 import "./App.css";
 import { Reset } from "styled-reset";
 import styled, { createGlobalStyle } from "styled-components";
+import { BrowserRouter as Router, Switch, Route,Link } from "react-router-dom";
+import  ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { useState, initialState } from 'react';
+
+
+
 
 
 
@@ -67,12 +74,13 @@ padding: 30px 20px;
 
 `;
 
-const BlueButton = styled.button`
+const BlueButton = styled(Link)`
  background-color: #378ad3;
  color: #fff;
  border: 0;
  border-radius: 5px;
  padding: 15px 10px;
+ text-decoration: none;
 `;
 
 
@@ -128,20 +136,85 @@ const UserLink = styled.a`
   color:#3ca4ff;
 `;
 
+const Container = styled.div`
+  padding: 30px 20px;
+`;
+
+const QuestionTitleInput = styled.input`
+    background: none;
+    border: 1px solid #777;
+    border-radius: 3px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 20px;
+    color: #fff;
+`;
+const QuestionBodyTextArea = styled.textarea`
+background: none;
+border: 1px solid #777;
+border-radius: 3px;
+display: block;
+width: 100%;
+box-sizing: border-box;
+padding: 10px;
+min-height: 200px;
+margin-bottom: 20px;
+color: #fff;
+font-family: inherit;
+`;
+
+const Header1 = styled.h1`
+   font-size: 1.3rem;
+`;
+
+const BlueButton1 = styled.button`
+background-color: #378ad3;
+ color: #fff;
+ border: 0;
+ border-radius: 5px;
+ padding: 15px 10px;
+ text-decoration: none;
+`;
+
+const PreviewArea = styled.div`
+   padding: 20px;
+   background-color: #444;
+   border-radius: 5px;
+   margin-bottom: 20px;
+`;
+
+
+
+
+
 function App() {
   return (
     <div>
    <Reset />
 <GlobalStyles />
+      
+
+
+      <Router>
       {Header()}
-      <QuestionPage />
+
+      <Switch>
+      <Route path="/ask" component={AskPage} />
+       <Route path="/" component={QuestionPage} />
+      </Switch>
+      </Router>
+
+
+     
     </div>
   );
 
   function Header() {
     return (
       <header>
-      <a className="logo" href="#">
+      <a to={'/'} className="logo" href="#">
      
        <span> Stack <b>overflowclone</b> </span>
       </a>
@@ -159,8 +232,8 @@ function QuestionPage() {
   return(
     <main>
     <HeaderRow>
-    <h1 class="er">Top Questions</h1>
-    <BlueButton>Ask&nbsp;Question</BlueButton>
+    <h1 class="er" style={{margin:0}}>Top Questions</h1>
+    <BlueButton to={'/ask'}>Ask&nbsp;Question</BlueButton>
     </HeaderRow>
     <QuestionRow />
     <QuestionRow />
@@ -182,12 +255,35 @@ function QuestionRow() {
       <Tag>quotes</Tag>
       <Tag>literals</Tag>
       <WhoAndWhen>
+
       asked 2 mins ago <UserLink>Dawid</UserLink>
 
       </WhoAndWhen>
     </QuestionTitleArea>
     </StyledQuestionRow>
   )
+};
+
+function AskPage(){
+ 
+
+  const [questionTitle,setQuestionTitle] = useState(initialState);
+  const [questionBody, setQuestionBody] = useState(initialState);
+ 
+  return(
+    <Container>
+      <Header1 style={{marginButton:'20px'}}>Ask a public Question</Header1>
+      <QuestionTitleInput type="text" value={questionTitle} onChange={e => setQuestionTitle(e.target.value)} placeholder="Title of your question" />
+      <QuestionBodyTextArea   onChange={e => setQuestionBody(e.target.value)} placeholder="More info about your question. you can use markdown here">{questionBody}</QuestionBodyTextArea>
+      <PreviewArea>
+        <ReactMarkdown plugins={[remarkGfm]} children={questionBody} />
+      </PreviewArea>
+      <BlueButton1>Post question</BlueButton1>
+    </Container>
+  )
 }
 
+
+  
+  
 export default App;
